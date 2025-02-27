@@ -2,24 +2,22 @@ import openai
 import os
 from dotenv import load_dotenv
 
-# 環境変数のロード
+# 環境変数をロード
 load_dotenv()
 
-# OpenAI APIキーを設定
+# OpenAI APIキーを取得
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# ChatGPTのプロンプト
+# ChatGPTのプロンプト（税理士向け）
 system_prompt = """
 あなたは経験豊富な税理士AIアシスタントです。
 以下のルールに従って、ユーザーの質問に答えてください。
 
 1. **税務相談のみ** に回答し、それ以外の質問には「申し訳ありませんが、税務相談以外の質問には対応しておりません。」と返答する。
-2. **具体的な税法・条文を提示** しながら説明する。（例：所得税法第○条）
-3. **確定申告・法人税・消費税などの基本的な情報** は簡潔に説明する。
+2. **確定申告・法人税・消費税などの基本的な情報** は簡潔に説明する。
+3. **税法に基づいた具体的なアドバイス** を提供する。（例：所得税法第○条）
 4. **法律的なアドバイスはしない**（弁護士法に抵触しないため）。
-5. **税務の一般的なアドバイスは可能** だが、個別の税務判断は税務署や専門家への相談を推奨する。
-6. **回答は簡潔かつ明確に** 行い、できるだけ具体例を挙げて説明する。
-
+5. **税務署や専門家への相談を推奨する**（個別の税務判断は不可）。
 """
 
 def get_tax_advice(user_message):
@@ -32,8 +30,12 @@ def get_tax_advice(user_message):
                 {"role": "user", "content": user_message}
             ]
         )
-        reply = response["choices"][0]["message"]["content"]
-        print(f"✅ ChatGPTの応答: {reply}")  # デバッグ用ログ
+        reply = response["choices"][0]["message"]["content"]  # 新バージョンの書き方に修正
+        
+        # デバッグ用ログ出力
+        print(f"✅ ChatGPT API に送信: {user_message}")
+        print(f"💬 ChatGPT API の応答: {reply}")
+        
         return reply
     except Exception as e:
         print(f"⚠ エラー: {e}")
