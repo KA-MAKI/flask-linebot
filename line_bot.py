@@ -2,7 +2,6 @@ from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-import openai
 import os
 import logging
 from dotenv import load_dotenv
@@ -11,7 +10,7 @@ from chatgpt_api import get_tax_advice
 # 環境変数のロード
 load_dotenv()
 
-# ログ設定（エラーを確認するため）
+# ログ設定
 logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)

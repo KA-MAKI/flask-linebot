@@ -8,7 +8,7 @@ load_dotenv()
 # OpenAI APIキーを設定
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# 税理士向けのプロンプト（GPT-3.5を使用）
+# ChatGPTのプロンプト
 system_prompt = """
 あなたは経験豊富な税理士AIアシスタントです。
 以下のルールに従って、ユーザーの質問に答えてください。
@@ -24,15 +24,22 @@ system_prompt = """
 
 def get_tax_advice(user_message):
     """GPT-3.5を使って税務相談の回答を生成する"""
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_message}
-        ]
-    )
-    return response["choices"][0]["message"]["content"]
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_message}
+            ]
+        )
+        reply = response["choices"][0]["message"]["content"]
+        print(f"✅ ChatGPTの応答: {reply}")  # デバッグ用ログ
+        return reply
+    except Exception as e:
+        print(f"⚠ エラー: {e}")
+        return "申し訳ありません。システムエラーが発生しました。"
 
-# テスト
+# テスト用
 if __name__ == "__main__":
-    print(get_tax_advice("今年の確定申告の期限はいつですか？"))
+    test_message = "今年の確定申告の期限はいつですか？"
+    print(get_tax_advice(test_message))
